@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply min-h-lvh;
+
+  background-image: linear-gradient(180deg, rgb(243 247 255 / 90%), rgb(245 245 247 / 90%));
+}
+
+input {
+  /** Remove shadow on Safari iOS */
+  appearance: none;
+}

@@ -1,0 +1,102 @@
+name: Deploy Short Link System
+
+on:
+  # 手动触发
+  workflow_dispatch:
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
+
+jobs:
+  build:
+    # 使用ubuntu系统镜像运行自动化脚本
+    runs-on: ubuntu-latest
+
+    steps:
+      # 切换分支
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 使用 node:lts/iron
+      - name: use Node.js lts/iron
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/iron'
+
+      #安装 pnpm
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      # 缓存 node modules
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      # npm install
+      - name: Install Dependencies
+        run: |
+          pnpm -v
+          pnpm install
+
+        # Create .env
+      - name: Create .env
+        run: |
+          echo REDIS_URL="${{ secrets.REDIS_URL }}" >> .env
+          echo REDIS_PASSWORD="${{ secrets.REDIS_PASSWORD }}" >> .env
+          echo ADMIN_USER="${{ secrets.ADMIN_USER }}" >> .env
+          echo JWT_SECRET="${{ secrets.JWT_SECRET }}" >> .env
+        shell: bash
+
+      # build
+      - name: Build
+        run: pnpm run build
+
+      # tar
+      - name: Tar dist
+        run: tar zcf build.tar.gz --exclude=build/cache build public .env package.json pnpm-lock.yaml next.config.js
+
+      # Deploy to server
+      - name: Deploy to server
+        id: deploy
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          #host: "foo.com,bar.com"
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.ACCESS_TOKEN }}
+          source: "build.tar.gz"
+          target: /wwwroot/deeplx
+
+      # 远程Command
+      - name: Command
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.ACCESS_TOKEN }}
+          script: |
+            cd /wwwroot/deeplx
+            rm -rf build
+            tar zxf build.tar.gz
+            rm build.tar.gz
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            pnpm i
+            pm2 stop deeplx
+            pm2 delete deeplx
+            npm run pm2
+            pm2 save
+            echo "Complete!!!"
