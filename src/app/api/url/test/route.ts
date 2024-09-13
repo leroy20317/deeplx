@@ -42,7 +42,8 @@ export async function POST(request: Request) {
     JSON.stringify({
       status: ele.status,
       failure_times: ele.status === 1 ? 0 : urlsData[i].failure_times + 1,
-      translate_times: ele.status === 1 ? urlsData[i].translate_times + 1 : 0,
+      translate_times:
+        ele.status === 1 ? urlsData[i].translate_times + 1 : urlsData[i].translate_times,
       last_success:
         ele.status === 1 ? dayjs().format('YYYY-MM-DD HH:mm:ss') : urlsData[i].last_success,
     }),

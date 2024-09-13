@@ -82,13 +82,6 @@ const Main = () => {
       dataIndex: 'url',
     },
     {
-      title: '翻译次数',
-      dataIndex: 'translate_times',
-      search: false,
-      width: 120,
-      sorter: (a, b) => a.translate_times - b.translate_times,
-    },
-    {
       title: '状态',
       dataIndex: 'status',
       valueEnum: {
@@ -99,11 +92,21 @@ const Main = () => {
       sorter: (a, b) => a.status - b.status,
     },
     {
+      title: '翻译次数',
+      dataIndex: 'translate_times',
+      search: false,
+      width: 120,
+      sorter: (a, b) => a.translate_times - b.translate_times,
+      render: (text) => (text ? <Typography.Text type="success">{text}</Typography.Text> : '-'),
+    },
+    {
       title: '错误次数',
       dataIndex: 'failure_times',
       search: false,
       width: 120,
       sorter: (a, b) => a.failure_times - b.failure_times,
+
+      render: (text) => (text ? <Typography.Text type="danger">{text}</Typography.Text> : '-'),
     },
     {
       title: '最后成功时间',
