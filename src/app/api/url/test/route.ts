@@ -51,5 +51,6 @@ export async function POST(request: Request) {
   await redis?.hSet('deepl-urls', handleSet.flat());
   return Response.json({
     status: 'success',
+    message: `本次测试${results.length}条，成功${results.filter((ele) => ele.status === 1).length}条`,
   });
 }

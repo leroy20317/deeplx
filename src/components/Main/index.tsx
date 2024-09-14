@@ -27,6 +27,7 @@ const Main = () => {
       message.error(res?.message || '操作失败');
       return;
     }
+    if (res?.message) message.success(res.message);
     refreshList();
   };
   const { loading: addLoading, run: addUrls } = useRequest(
@@ -199,8 +200,8 @@ const Main = () => {
             }
             const handleUrls = urls
               .split(/\n|\|/)
-              .filter(Boolean)
-              .map((ele) => ele.trim().replace(/\/(translate)?$/, ''));
+              .map((ele) => ele.trim().replace(/\/(translate)?$/, ''))
+              .filter(Boolean);
             console.log('提交数据', handleUrls);
             addUrls({
               url: handleUrls,
@@ -241,7 +242,26 @@ const Main = () => {
               });
             }}
           >
-            重新测试不可用
+            重新测试
+          </Button>,
+          <Button
+            key="delete"
+            danger
+            onClick={() => {
+              const handleUrls = list
+                .filter((ele) => ele.status === 0 && ele.failure_times > 10)
+                .map((ele) => ele.url);
+              if (!handleUrls.length) {
+                message.error('没有超过十次失败的接口');
+                return;
+              }
+              console.log('delete', handleUrls);
+              deleteUrls({
+                url: handleUrls,
+              });
+            }}
+          >
+            删除多次失败
           </Button>,
         ]}
       />
