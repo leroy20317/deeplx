@@ -12,7 +12,14 @@ const authToken = process.env.AUTH_TOKEN || '';
 const getCacheApis = async () => {
   if (!globalThis.cacheApis?.length) {
     const redis = await initClient();
-    globalThis.cacheApis = (await redis?.hKeys('deepl-urls')) || [];
+    const deeplUrls = (await redis?.hGetAll('deepl-urls')) || {};
+    globalThis.cacheApis = Object.entries(deeplUrls).reduce<string[]>((prev, [url, item]) => {
+      const data = JSON.parse(item);
+      if (data.status === 1) {
+        prev.push(url);
+      }
+      return prev;
+    }, []);
   }
   return globalThis.cacheApis;
 };
