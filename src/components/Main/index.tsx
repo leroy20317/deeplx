@@ -168,6 +168,8 @@ const Main = () => {
               通过
               <Typography.Link
                 style={{ marginInline: 10 }}
+                rel="noreferrer"
+                target="_blank"
                 href="https://fofa.info/result?qbase64=Ym9keT0neyJjb2RlIjoyMDAsIm1lc3NhZ2UiOiJEZWVwTCBGcmVlIEFQSSwgRGV2ZWxvcGVkIGJ5IHNqbGxlbyBhbmQgbWlzc3VvLiBHbyB0byAvdHJhbnNsYXRlIHdpdGggUE9TVC4gaHR0cDovL2dpdGh1Yi5jb20vT3dPLU5ldHdvcmsvRGVlcExYIn0n"
               >
                 Fofa
@@ -242,14 +244,14 @@ const Main = () => {
               });
             }}
           >
-            重新测试
+            重新测试不可用
           </Button>,
           <Button
             key="delete"
             danger
             onClick={() => {
               const handleUrls = list
-                .filter((ele) => ele.status === 0 && ele.failure_times > 10)
+                .filter((ele) => ele.status === 0 && ele.failure_times >= 10)
                 .map((ele) => ele.url);
               if (!handleUrls.length) {
                 message.error('没有超过十次失败的接口');
@@ -261,7 +263,7 @@ const Main = () => {
               });
             }}
           >
-            删除多次失败
+            删除十次失败
           </Button>,
         ]}
       />
