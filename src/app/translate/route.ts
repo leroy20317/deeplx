@@ -41,6 +41,7 @@ const finish = async (url: string, status: 0 | 1) => {
     data.translate_times = data.translate_times + 1;
     data.last_success = dayjs().format('YYYY-MM-DD HH:mm:ss');
   } else {
+    data.status = data.failure_times > 3 ? 0 : 1;
     data.failure_times = data.failure_times + 1;
   }
   await redis?.hSet('deepl-urls', url, JSON.stringify(data));
