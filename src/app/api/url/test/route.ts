@@ -10,12 +10,6 @@ import { initClient } from '@/utils/redis';
 
 export async function POST(request: Request) {
   const data: { url: string | string[] } = await request.json();
-  const headers = { 'Content-Type': 'application/json' };
-  const payload = {
-    text: 'Hello, World!',
-    source_lang: 'EN',
-    target_lang: 'ZH',
-  };
   const handleUrls = typeof data.url === 'string' ? [data.url] : data.url;
 
   const redis = await initClient();
@@ -26,7 +20,15 @@ export async function POST(request: Request) {
     handleUrls.map((api) => {
       return new Promise<{ url: string; status: 0 | 1 }>((resolve) => {
         axios
-          .post(api, payload, { headers, timeout: 5000 })
+          .post(
+            api,
+            {
+              text: 'Hello, World!',
+              source_lang: 'EN',
+              target_lang: 'ZH',
+            },
+            { headers: { 'Content-Type': 'application/json' }, timeout: 5000 },
+          )
           .then((res) => {
             console.log('test', res.data.data);
             resolve({ url: api, status: res.data.data.includes('你好，世界') ? 1 : 0 });

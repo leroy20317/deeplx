@@ -196,7 +196,7 @@ const Main = () => {
                 if (!URL.canParse(ele)) return undefined;
                 const url = new URL(ele);
                 if (!/\/translate$/.test(url.pathname)) {
-                  url.pathname += '/translate';
+                  url.pathname = `${url.pathname.replace(/\/$/, '')}/translate`;
                 }
                 return url.toString();
               })
