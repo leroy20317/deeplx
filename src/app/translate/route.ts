@@ -47,10 +47,12 @@ const finish = async (url: string, status: 0 | 1) => {
   await redis?.hSet('deepl-urls', url, JSON.stringify(data));
 };
 
-export async function POST(request: NextRequest, { params }: { params?: { token: string } }) {
+export async function POST(request: NextRequest) {
   // 检验 token
-  if (authToken && authToken !== params?.token) {
-    return new Response('Bad Request', { status: 400 });
+  if (authToken) {
+    const token = request.nextUrl.pathname.split('/')[1];
+    console.log('test token', token, authToken);
+    if (authToken !== token) return new Response('Bad Request', { status: 400 });
   }
 
   const cacheApis = await getCacheApis();
@@ -61,10 +63,9 @@ export async function POST(request: NextRequest, { params }: { params?: { token:
   const body = await request.json();
   while (cacheApis.length > 0) {
     const targetURL = cacheApis.pop() || '';
-    const fullURL = targetURL + '/translate';
-    console.log(`request: ${fullURL} ,req: ${JSON.stringify(body)}`);
+    console.log(`request: ${targetURL} ,req: ${JSON.stringify(body)}`);
     try {
-      const res = await axios.post(fullURL, body, {
+      const res = await axios.post(targetURL, body, {
         headers: { 'Content-Type': 'application/json' },
         timeout: 5000,
       });
@@ -76,7 +77,7 @@ export async function POST(request: NextRequest, { params }: { params?: { token:
       return Response.json(res.data);
     } catch (error: any) {
       await finish(targetURL, 0);
-      console.log(`request failure: ${fullURL}`, error?.message || error);
+      console.log(`request failure: ${targetURL}`, error?.message || error);
     }
   }
   return new Response('Server Error', { status: 500 });

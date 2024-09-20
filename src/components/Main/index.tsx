@@ -1,4 +1,4 @@
-import { App, Card, ConfigProvider, Popconfirm } from 'antd';
+import { App, Card, ConfigProvider, Form, Popconfirm } from 'antd';
 import type { ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 
@@ -12,7 +12,6 @@ type TableListItem = { url: string } & API.UrlData;
 
 const Main = () => {
   const { message } = App.useApp();
-  const [urls, setUrls] = useState<string>('');
   const {
     data,
     loading,
@@ -185,24 +184,22 @@ const Main = () => {
         </ConfigProvider>
       </Card>
       <Card>
-        <Input.TextArea
-          autoSize={{ minRows: 4, maxRows: 8 }}
-          placeholder="支持翻译的接口链接，多个接口链接每行一个或用 | 分隔"
-          value={urls}
-          onChange={(e) => setUrls(e.target.value)}
-        />
-        <Button
-          style={{ marginTop: 16 }}
-          type="primary"
-          loading={addLoading}
-          onClick={() => {
+        <Form<{ urls: string }>
+          onFinish={({ urls }) => {
             if (!urls) {
               message.error('数据不能为空！');
               return;
             }
             const handleUrls = urls
               .split(/\n|\|/)
-              .map((ele) => ele.trim().replace(/\/(translate)?$/, ''))
+              .map((ele) => {
+                if (!URL.canParse(ele)) return undefined;
+                const url = new URL(ele);
+                if (!/\/translate$/.test(url.pathname)) {
+                  url.pathname += '/translate';
+                }
+                return url.toString();
+              })
               .filter(Boolean);
             console.log('提交数据', handleUrls);
             addUrls({
@@ -210,8 +207,16 @@ const Main = () => {
             });
           }}
         >
-          提交数据
-        </Button>
+          <Form.Item name="urls">
+            <Input.TextArea
+              autoSize={{ minRows: 4, maxRows: 8 }}
+              placeholder="支持翻译的接口链接，多个接口链接每行一个或用 | 分隔"
+            />
+          </Form.Item>
+          <Button htmlType="submit" type="primary" loading={addLoading}>
+            提交数据
+          </Button>
+        </Form>
       </Card>
       <ProTable<TableListItem>
         dataSource={list}
