@@ -1,0 +1,11 @@
+/scripts
+/config
+node_modules
+.history
+tsconfig.json
+*.config.js
+cdn.js
+build
+.prettierignore
+.gitignore
+**/*.d.ts

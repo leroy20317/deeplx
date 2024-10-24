@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const ignorePath = path.resolve(__dirname, "eslintignore");
+const ignorePath = path.resolve(__dirname, ".eslintignore");
 
 export default tseslint.config(
   js.configs.recommended,
