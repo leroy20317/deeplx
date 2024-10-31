@@ -41,10 +41,10 @@ const finish = async (url: string, status: 0 | 1) => {
     data.translate_times = data.translate_times + 1;
     data.last_success = dayjs().format('YYYY-MM-DD HH:mm:ss');
   } else {
-    data.status = data.failure_times > 3 ? 0 : 1;
     data.failure_times = data.failure_times + 1;
+    data.status = data.failure_times >= 3 ? 0 : 1;
   }
-  console.log(`finish: ${url} ,data: ${JSON.stringify(data)}`);
+  // console.log(`finish: ${url}, status: ${status} ,data: ${JSON.stringify(data)}`);
   await redis?.hSet('deepl-urls', url, JSON.stringify(data));
 };
 
@@ -75,11 +75,11 @@ export async function POST(request: NextRequest) {
         throw new Error('api check error');
       } else {
         await finish(targetURL, 1);
+        return Response.json(res.data);
       }
-      return Response.json(res.data);
     } catch (error: any) {
-      await finish(targetURL, 0);
       console.log(`request failure: ${targetURL}`, error?.message || error);
+      await finish(targetURL, 0);
     }
   }
   return new Response('Server Error', { status: 500 });
