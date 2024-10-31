@@ -27,7 +27,6 @@ const checkApiReturn = (res: any, checkValue = '') => {
   if (!('data' in res) || !('data' in res.data)) {
     return false;
   }
-  console.log(`response: ${JSON.stringify(res.data)}`);
   const { data } = res.data;
   return checkValue ? data.includes(checkValue) : data.length > 0;
 };
@@ -38,12 +37,14 @@ const finish = async (url: string, status: 0 | 1) => {
   if (!str) return;
   const data: API.UrlData = JSON.parse(str);
   if (status === 1) {
+    data.status = 1;
     data.translate_times = data.translate_times + 1;
     data.last_success = dayjs().format('YYYY-MM-DD HH:mm:ss');
   } else {
     data.status = data.failure_times > 3 ? 0 : 1;
     data.failure_times = data.failure_times + 1;
   }
+  console.log(`finish: ${url} ,data: ${JSON.stringify(data)}`);
   await redis?.hSet('deepl-urls', url, JSON.stringify(data));
 };
 
@@ -72,8 +73,9 @@ export async function POST(request: NextRequest) {
       // 验证结果
       if (!checkApiReturn(res)) {
         throw new Error('api check error');
+      } else {
+        await finish(targetURL, 1);
       }
-      await finish(targetURL, 1);
       return Response.json(res.data);
     } catch (error: any) {
       await finish(targetURL, 0);
