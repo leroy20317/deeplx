@@ -39,6 +39,7 @@ const finish = async (url: string, status: 0 | 1) => {
   if (status === 1) {
     data.status = 1;
     data.translate_times = data.translate_times + 1;
+    data.failure_times = 0;
     data.last_success = dayjs().format('YYYY-MM-DD HH:mm:ss');
   } else {
     data.failure_times = data.failure_times + 1;
