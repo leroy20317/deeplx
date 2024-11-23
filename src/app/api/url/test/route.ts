@@ -31,7 +31,10 @@ export async function POST(request: Request) {
           )
           .then((res) => {
             console.log('test', res.data.data);
-            resolve({ url: api, status: res.data.data.includes('你好，世界') ? 1 : 0 });
+            resolve({
+              url: api,
+              status: ['世界您好', '你好，世界'].some((ele) => res.data.data.includes(ele)) ? 1 : 0,
+            });
           })
           .catch(() => {
             resolve({ url: api, status: 0 });
