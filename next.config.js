@@ -8,6 +8,10 @@ const nextConfig = {
         source: '/:token/translate',
         destination: '/translate',
       },
+      {
+        source: '/:token/deepl',
+        destination: '/deepl',
+      },
     ];
   },
 };
