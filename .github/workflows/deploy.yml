@@ -3,10 +3,10 @@ name: Deploy Deeplx Load Balancing
 on:
   # 手动触发
   workflow_dispatch:
-#  push:
-#    branches: [ main ]
-#  pull_request:
-#    branches: [ main ]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
