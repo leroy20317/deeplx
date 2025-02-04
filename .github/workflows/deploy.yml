@@ -42,6 +42,7 @@ jobs:
           echo ADMIN_USER="${{ secrets.ADMIN_USER }}" >> .env
           echo JWT_SECRET="${{ secrets.JWT_SECRET }}" >> .env
           echo AUTH_TOKEN="${{ secrets.AUTH_TOKEN }}" >> .env
+          echo DEEPL_COOKIES="${{ secrets.DEEPL_COOKIES }}" >> .env
         shell: bash
 
       # build
