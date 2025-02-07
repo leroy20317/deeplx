@@ -60,6 +60,7 @@ jobs:
         with:
           #host: "foo.com,bar.com"
           host: ${{ secrets.REMOTE_HOST }}
+          port: ${{ secrets.REMOTE_PORT }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.ACCESS_TOKEN }}
           source: "build.tar.gz"
@@ -70,6 +71,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
+          port: ${{ secrets.REMOTE_PORT }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.ACCESS_TOKEN }}
           script: |
