@@ -6,9 +6,7 @@
 import type { NextRequest } from 'next/server';
 import axios from 'axios';
 const authToken = process.env.AUTH_TOKEN || '';
-const deeplCookies = (process.env.DEEPL_COOKIES || 'aaa3bfd4-8852-4502-8903-8faeca17c310')
-  .split(',')
-  .filter(Boolean);
+const deeplCookies = process.env.DEEPL_COOKIES || ''.split(',').filter(Boolean);
 
 const getNextCookie = () => {
   const length = deeplCookies.length;

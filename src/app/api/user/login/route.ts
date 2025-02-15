@@ -9,7 +9,7 @@ const jwtSecret = process.env.JWT_SECRET || '';
 const adminUser = process.env.ADMIN_USER || '';
 
 export async function POST(request: Request) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const { username, password } = await request.json();
   const [name, pass] = adminUser.split(':');
   if (name && name === username && pass === password) {

@@ -9,7 +9,7 @@ import { cookies } from 'next/headers';
 import axios from 'axios';
 
 const verify = async () => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   if (!cookieStore.get('token')) {
     return false;
   }

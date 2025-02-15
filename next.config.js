@@ -12,6 +12,10 @@ const nextConfig = {
         source: '/:token/deepl/translate',
         destination: '/deepl/translate',
       },
+      {
+        source: '/:token/underline/translate',
+        destination: '/underline/translate',
+      },
     ];
   },
 };

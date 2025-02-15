@@ -9,7 +9,7 @@ import axios from 'axios';
 import { initClient } from '@/utils/redis';
 
 const verify = async () => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   if (!cookieStore.get('token')) {
     return false;
   }
