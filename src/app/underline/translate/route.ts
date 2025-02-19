@@ -13,6 +13,12 @@ const translate = async (params: { text: string; source: string; destination: st
     '中文(简体)': 'zh',
     英语: 'en',
     日语: 'ja',
+    韩语: 'ko',
+    法语: 'fr',
+    德语: 'de',
+    意大利语: 'it',
+    西班牙语: 'es',
+    葡萄牙语: 'pt',
   };
 
   // 先尝试翻译为首要目标语种
@@ -42,7 +48,7 @@ const translate = async (params: { text: string; source: string; destination: st
   }
   return {
     data: res.data.data,
-    from: '',
+    from: params.source || '',
     to: dest,
   };
 };
