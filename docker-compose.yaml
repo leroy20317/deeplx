@@ -1,0 +1,19 @@
+services:
+  deeplx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: deeplx:latest # 定义镜像名称和标签
+    container_name: deeplx # 容器名称
+    ports:
+      - '5700:5700'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    restart: always
+    # 如果需要环境变量，可以添加：
+    # environment:
+    #   - NODE_ENV=production
+    #   - DATABASE_URL=your_database_url
+    # 如果需要挂载卷：
+    # volumes:
+    #   - ./data:/app/data
