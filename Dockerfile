@@ -9,7 +9,7 @@ RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml ./
 
 # 安装依赖（这一步会被缓存，除非package.json或pnpm-lock.yaml发生变化）
-RUN pnpm install --prod
+RUN pnpm install --prod --frozen-lockfile
 
 # 然后复制其他文件
 COPY build ./build

@@ -17,7 +17,7 @@
     "lint:style": "stylelint --fix \"src/**/*.css\"",
     "precommit": "lint-staged",
     "prettier": "prettier -c --write \"src/**/*\"",
-    "prepare": "husky install || true"
+    "postinstall": "husky || true"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": "npm run lint:js",
