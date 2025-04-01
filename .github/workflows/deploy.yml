@@ -89,5 +89,5 @@ jobs:
             tar zxf build.tar.gz
             rm build.tar.gz
             docker-compose down
-            docker-compose up -d
+            docker-compose up -d --build
             echo "Complete!!!"
